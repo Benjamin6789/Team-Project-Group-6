@@ -64,7 +64,17 @@ class Sensors:
 		return humidity
 		
 	def soil_moisture(self) -> float:
+		soil_max:float = 3.70
+		soil_min:float = 0.05
+		
 		soil = gas.read_adc()
-		return soil
+		if soil <= soil_min:
+			return 0
+		if soil >= soil_max:
+			return 100
+		
+		soil_percentage:float = round((soil / soil_max) * 100 , 2)
+		return soil_percentage
+		
 		
 
