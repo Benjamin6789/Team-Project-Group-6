@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Health Monitoring Dashboard</title>
+
+    <!-- Link to Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Link to Font Awesome for plant icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+        .chart-container {
+            width: 100%;
+            margin-top: 40px;
+        }
+        canvas {
+            width: 100% !important;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- Plant Symbol/Icon -->
+    <i class="fas fa-seedling" style="font-size: 40px;"></i>
+    <h1>Plant Health Monitoring Dashboard</h1>
+</header>
+
+<div class="container">
+    <!-- Table showing the plant data -->
+    <h2>Latest Plant Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Soil Moisture (%)</th>
+                <th>Air Quality</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in plant_data %}
+            <tr>
+                <td>{{ data.timestamp }}</td>
+                <td>{{ data.temperature }}</td>
+                <td>{{ data.humidity }}</td>
+                <td>{{ data.soil_moisture }}</td>
+                <td>{{ data.air_quality }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Chart Container for Temperature -->
+    <div class="chart-container">
+        <h3>Temperature (°C) Over Time</h3>
+        <canvas id="temperatureChart"></canvas>
+    </div>
+
+    <!-- Chart Container for Humidity -->
+    <div class="chart-container">
+        <h3>Humidity (%) Over Time</h3>
+        <canvas id="humidityChart"></canvas>
+    </div>
+
+    <!-- Chart Container for Soil Moisture -->
+    <div class="chart-container">
+        <h3>Soil Moisture (%) Over Time</h3>
+        <canvas id="soilMoistureChart"></canvas>
+    </div>
+
+    <!-- Chart Container for Air Quality -->
+    <div class="chart-container">
+        <h3>Air Quality Over Time</h3>
+        <canvas id="airQualityChart"></canvas>
+    </div>
+</div>
+
+<!-- Footer Section -->
+<div class="footer">
+    <p>&copy; 2025 Plant Health Monitoring System</p>
+</div>
+
+<!-- Script to render the Charts -->
+<script>
+    const labels = [{% for data in plant_data %}'{{ data.timestamp }}',{% endfor %}];
+
+    // Temperature Chart
+    const temperatureChart = new Chart(document.getElementById('temperatureChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Temperature (°C)',
+                data: [{% for data in plant_data %}{{ data.temperature }},{% endfor %}],
+                borderColor: '#FF5733',
+                backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Humidity Chart
+    const humidityChart = new Chart(document.getElementById('humidityChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Humidity (%)',
+                data: [{% for data in plant_data %}{{ data.humidity }},{% endfor %}],
+                borderColor: '#33B5FF',
+                backgroundColor: 'rgba(51, 181, 255, 0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Humidity (%)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Soil Moisture Chart
+    const soilMoistureChart = new Chart(document.getElementById('soilMoistureChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Soil Moisture (%)',
+                data: [{% for data in plant_data %}{{ data.soil_moisture }},{% endfor %}],
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Soil Moisture (%)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Air Quality Chart
+    const airQualityChart = new Chart(document.getElementById('airQualityChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Air Quality',
+                data: [{% for data in plant_data %}{{ data.air_quality }},{% endfor %}],
+                borderColor: '#FFC107',
+                backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Air Quality'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
