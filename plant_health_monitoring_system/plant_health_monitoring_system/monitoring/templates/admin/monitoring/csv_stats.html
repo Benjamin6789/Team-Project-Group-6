@@ -1,0 +1,53 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url 'admin:monitoring_plantdata_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {% translate 'CSV Statistics' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>CSV File Statistics</h1>
+    
+    <div style="margin-top: 20px;">
+        {% if stats.exists %}
+            <div class="module" style="margin-bottom: 20px;">
+                <h2>File Information</h2>
+                <table style="width: 100%;">
+                    <tr>
+                        <th style="width: 200px; text-align: left; padding: 10px;">File Path</th>
+                        <td style="padding: 10px;">{{ stats.path }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 200px; text-align: left; padding: 10px;">File Size</th>
+                        <td style="padding: 10px;">{{ stats.size_human }} ({{ stats.size }} bytes)</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 200px; text-align: left; padding: 10px;">Last Modified</th>
+                        <td style="padding: 10px;">{{ stats.last_modified|date:"F j, Y, g:i a" }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 200px; text-align: left; padding: 10px;">Total Rows</th>
+                        <td style="padding: 10px;">{{ stats.rows }} ({{ stats.data_rows }} data rows, 1 header row)</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="module" style="margin-bottom: 20px;">
+                <h2>Actions</h2>
+                <div style="padding: 10px;">
+                    <a href="{% url 'admin:export-csv' %}" class="button" style="background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; display: inline-block; margin-right: 10px;">Export Data as CSV</a>
+                    <a href="{% url 'admin:monitoring_plantdata_changelist' %}" class="button" style="background-color: #2196F3; color: white; padding: 10px 15px; text-decoration: none; display: inline-block;">Return to Data List</a>
+                </div>
+            </div>
+        {% else %}
+            <p>CSV file does not exist at the expected path.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

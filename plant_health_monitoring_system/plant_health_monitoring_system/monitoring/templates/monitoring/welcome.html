@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Plant Health Monitoring System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 36px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to the Plant Health Monitoring System!</h1>
+        <p>We are committed to helping you keep your plants healthy and thriving. Our system uses real-time data from sensors to monitor your plants' health and make sure they are well taken care of. With features like automated watering, soil moisture tracking, and air quality monitoring, managing plant health has never been easier!</p>
+        <a href="{% url 'dashboard' %}" class="button">Get Started</a>
+    </div>
+
+</body>
+</html>

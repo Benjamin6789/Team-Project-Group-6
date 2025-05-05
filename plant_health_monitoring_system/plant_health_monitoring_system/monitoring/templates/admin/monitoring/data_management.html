@@ -1,0 +1,78 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url 'admin:monitoring_plantdata_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {% translate 'Data Management' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Data Management</h1>
+    
+    <div style="margin-top: 20px;">
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Database Statistics</h2>
+            <table style="width: 100%;">
+                <tr>
+                    <th style="width: 200px; text-align: left; padding: 10px;">Total Records</th>
+                    <td style="padding: 10px;">{{ total_records }}</td>
+                </tr>
+                <tr>
+                    <th style="width: 200px; text-align: left; padding: 10px;">Table Size</th>
+                    <td style="padding: 10px;">{{ table_size }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Export Options</h2>
+            <div style="padding: 10px;">
+                <a href="{% url 'admin:export-csv' %}" class="button" style="background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; display: inline-block; margin-right: 10px;">Export All Data as CSV</a>
+                <a href="{% url 'admin:csv-stats' %}" class="button" style="background-color: #FF9800; color: white; padding: 10px 15px; text-decoration: none; display: inline-block; margin-right: 10px;">View CSV File Statistics</a>
+            </div>
+        </div>
+        
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Database Management</h2>
+            <div style="padding: 10px;">
+                <p class="help" style="color: #666; margin-bottom: 15px;">
+                    These actions affect the database directly. Use with caution as they may result in data loss.
+                </p>
+                
+                <form method="post" action="{% url 'admin:monitoring_plantdata_changelist' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_old_data">
+                    
+                    <div style="margin-bottom: 10px;">
+                        <label for="days" style="display: inline-block; width: 200px;">Delete data older than:</label>
+                        <select name="days" id="days" style="padding: 5px;">
+                            <option value="7">7 days</option>
+                            <option value="30">30 days</option>
+                            <option value="90">90 days</option>
+                            <option value="180">180 days</option>
+                            <option value="365">1 year</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" style="background-color: #F44336; color: white; padding: 8px 15px; border: none; cursor: pointer;"
+                            onclick="return confirm('Are you sure you want to delete old data? This action cannot be undone.')">
+                        Delete Old Data
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>System Status</h2>
+            <div style="padding: 10px;">
+                <a href="{% url 'admin:monitoring_systemstatus_changelist' %}" class="button" style="background-color: #2196F3; color: white; padding: 10px 15px; text-decoration: none; display: inline-block;">View System Status</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

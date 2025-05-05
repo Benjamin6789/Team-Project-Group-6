@@ -1,0 +1,134 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Plant Health Monitoring Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    :root {
+        --primary: #4CAF50;
+        --secondary: #2196F3;
+        --accent: #FF9800;
+        --primary-fg: #fff;
+        --body-fg: #333;
+        --body-bg: #f8f8f8;
+        --header-color: #fff;
+        --header-branding-color: var(--accent);
+        --header-bg: var(--primary);
+        --header-link-color: var(--primary-fg);
+        --breadcrumbs-bg: #fff;
+        --breadcrumbs-fg: var(--body-fg);
+        --link-color: var(--primary);
+        --link-hover-color: #45a049;
+        --button-bg: var(--primary);
+        --button-fg: var(--primary-fg);
+    }
+    
+    #header {
+        background: var(--header-bg);
+        color: var(--header-color);
+    }
+    
+    #branding h1 {
+        color: var(--header-branding-color);
+    }
+    
+    #branding h1 a {
+        display: flex;
+        align-items: center;
+    }
+    
+    #branding h1 a:before {
+        content: "\f4fb";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        margin-right: 10px;
+        font-size: 24px;
+    }
+    
+    div.breadcrumbs {
+        background: var(--breadcrumbs-bg);
+        color: var(--breadcrumbs-fg);
+        border-bottom: 1px solid #eee;
+    }
+    
+    div.breadcrumbs a {
+        color: var(--link-color);
+    }
+    
+    div.breadcrumbs a:hover {
+        color: var(--link-hover-color);
+    }
+    
+    .module h2, .module caption, .inline-group h2 {
+        background: var(--primary);
+        color: var(--primary-fg);
+    }
+    
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: var(--button-bg);
+        color: var(--button-fg);
+    }
+    
+    .button:hover, input[type=submit]:hover, input[type=button]:hover,
+    .submit-row input:hover, a.button:hover {
+        background: var(--link-hover-color);
+    }
+    
+    .object-tools a {
+        background-color: var(--secondary);
+    }
+    
+    .object-tools a:hover {
+        background-color: #0b7dda;
+    }
+    
+    #user-tools {
+        display: flex;
+        align-items: center;
+    }
+    
+    #dashboard-link {
+        margin-right: 20px;
+        background-color: var(--accent);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    
+    #dashboard-link:hover {
+        background-color: #e68a00;
+    }
+    
+    #dashboard-link i {
+        margin-right: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block usertools %}
+<div id="user-tools">
+    <a id="dashboard-link" href="/dashboard/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    {% if has_permission %}
+    <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+    {% endif %}
+    {% block userlinks %}
+    {% if site_url %}
+    <a href="{{ site_url }}">{% translate 'View site' %}</a> /
+    {% endif %}
+    {% if user.is_active and user.is_staff %}
+    {% url 'django-admindocs-docroot' as docsroot %}
+    {% if docsroot %}
+    <a href="{{ docsroot }}">{% translate 'Documentation' %}</a> /
+    {% endif %}
+    {% endif %}
+    {% if user.has_usable_password %}
+    <a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a> /
+    {% endif %}
+    <a href="{% url 'admin:logout' %}">{% translate 'Log out' %}</a>
+    {% endblock %}
+</div>
+{% endblock %} 

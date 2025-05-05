@@ -1,0 +1,119 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:system-settings' %}">{% translate 'System Settings' %}</a>
+    &rsaquo; {% translate 'Clear CSV File' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Clear CSV Data File</h1>
+    
+    <div style="margin-top: 20px;">
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Warning: Data Deletion</h2>
+            <div style="padding: 15px;">
+                <div style="background-color: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 4px; border-left: 5px solid #f5c6cb;">
+                    <h3 style="margin-top: 0;">Caution: You are about to clear data!</h3>
+                    <p>This action will remove all data from the CSV file, keeping only the header row.</p>
+                </div>
+                
+                <p>CSV file path: <code>{{ csv_file_path }}</code></p>
+                
+                <p style="margin-top: 15px;"><strong>This action will:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Create a backup copy of the current CSV file</li>
+                    <li>Clear all data rows, preserving only the header</li>
+                    <li>Keep the file structure intact for future data collection</li>
+                </ul>
+                
+                <form method="post" style="margin-top: 20px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="confirm" value="yes">
+                    
+                    <div id="response-message" style="display: none; margin: 15px 0; padding: 10px; border-radius: 4px;"></div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" id="clear-button" style="background-color: #F44336; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+                            Clear CSV File
+                        </button>
+                        <a href="{% url 'admin:system-settings' %}" style="background-color: #f0f0f0; color: #333; padding: 10px 15px; text-decoration: none; border-radius: 4px;">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const clearButton = document.getElementById('clear-button');
+        const responseMessage = document.getElementById('response-message');
+        const form = clearButton.closest('form');
+        
+        clearButton.addEventListener('click', function() {
+            // Ask for confirmation
+            if (!confirm('Are you sure you want to clear the CSV file? This action cannot be undone.')) {
+                return;
+            }
+            
+            // Disable the button during the request
+            clearButton.disabled = true;
+            clearButton.innerText = 'Clearing...';
+            
+            // Get the form data
+            const formData = new FormData(form);
+            
+            // Send the request
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show the response message
+                responseMessage.style.display = 'block';
+                
+                if (data.success) {
+                    responseMessage.style.backgroundColor = '#d4edda';
+                    responseMessage.style.color = '#155724';
+                    responseMessage.innerText = data.message;
+                    
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = "{% url 'admin:system-settings' %}";
+                    }, 2000);
+                } else {
+                    responseMessage.style.backgroundColor = '#f8d7da';
+                    responseMessage.style.color = '#721c24';
+                    responseMessage.innerText = data.message;
+                    
+                    // Re-enable the button
+                    clearButton.disabled = false;
+                    clearButton.innerText = 'Try Again';
+                }
+            })
+            .catch(error => {
+                // Show an error message
+                responseMessage.style.display = 'block';
+                responseMessage.style.backgroundColor = '#f8d7da';
+                responseMessage.style.color = '#721c24';
+                responseMessage.innerText = 'An error occurred. Please try again.';
+                
+                // Re-enable the button
+                clearButton.disabled = false;
+                clearButton.innerText = 'Try Again';
+            });
+        });
+    });
+</script>
+{% endblock %} 

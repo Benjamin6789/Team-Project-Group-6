@@ -1,0 +1,71 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; {% translate 'System Settings' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>System Settings</h1>
+    
+    <div style="margin-top: 20px;">
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Storage Information</h2>
+            <table style="width: 100%;">
+                <tr>
+                    <th style="width: 200px; text-align: left; padding: 10px;">CSV File Path</th>
+                    <td style="padding: 10px;">{{ csv_file_path }}</td>
+                </tr>
+                <tr>
+                    <th style="width: 200px; text-align: left; padding: 10px;">CSV File Size</th>
+                    <td style="padding: 10px;">{{ csv_size_human }} ({{ csv_size }} bytes)</td>
+                </tr>
+                <tr>
+                    <th style="width: 200px; text-align: left; padding: 10px;">Database File Path</th>
+                    <td style="padding: 10px;">{{ db_file_path }}</td>
+                </tr>
+                <tr>
+                    <th style="width: 200px; text-align: left; padding: 10px;">Database File Size</th>
+                    <td style="padding: 10px;">{{ db_size_human }} ({{ db_size }} bytes)</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Disk Space</h2>
+            <table style="width: 100%;">
+                <tr>
+                    <th style="width: 200px; text-align: left; padding: 10px;">Free Space</th>
+                    <td style="padding: 10px;">{{ free_space }} of {{ total_space }} ({{ usage_percent }} used)</td>
+                </tr>
+            </table>
+            <div style="padding: 10px;">
+                <div style="background-color: #f0f0f0; height: 20px; width: 100%; border-radius: 5px; overflow: hidden;">
+                    <div style="background-color: #4CAF50; height: 100%; width: {{ usage_percent }}"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>CSV File Actions</h2>
+            <div style="padding: 10px;">
+                <a href="{% url 'admin:csv-stats' %}" class="button" style="background-color: #2196F3; color: white; padding: 10px 15px; text-decoration: none; display: inline-block; margin-right: 10px;">View Detailed CSV Stats</a>
+                <a href="{% url 'admin:backup-csv' %}" class="button" style="background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; display: inline-block; margin-right: 10px;">Backup CSV File</a>
+                <a href="{% url 'admin:clear-csv' %}" class="button" style="background-color: #F44336; color: white; padding: 10px 15px; text-decoration: none; display: inline-block;">Clear CSV File</a>
+            </div>
+        </div>
+        
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Database Actions</h2>
+            <div style="padding: 10px;">
+                <a href="{% url 'admin:monitoring_plantdata_changelist' %}" class="button" style="background-color: #2196F3; color: white; padding: 10px 15px; text-decoration: none; display: inline-block; margin-right: 10px;">View Plant Data</a>
+                <a href="{% url 'admin:data-management' %}" class="button" style="background-color: #FF9800; color: white; padding: 10px 15px; text-decoration: none; display: inline-block;">Data Management</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

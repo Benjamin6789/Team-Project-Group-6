@@ -1,0 +1,109 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:system-settings' %}">{% translate 'System Settings' %}</a>
+    &rsaquo; {% translate 'Backup CSV File' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Backup CSV Data File</h1>
+    
+    <div style="margin-top: 20px;">
+        <div class="module" style="margin-bottom: 20px;">
+            <h2>Create Backup</h2>
+            <div style="padding: 15px;">
+                <p>You are about to create a backup of the CSV data file:</p>
+                <p><code>{{ csv_file_path }}</code></p>
+                
+                <p style="margin-top: 15px;">This action will:</p>
+                <ul style="margin-left: 20px;">
+                    <li>Create a timestamped backup copy of the CSV file</li>
+                    <li>Keep the original file unchanged</li>
+                </ul>
+                
+                <form method="post" style="margin-top: 20px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="confirm" value="yes">
+                    
+                    <div id="response-message" style="display: none; margin: 15px 0; padding: 10px; border-radius: 4px;"></div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" id="backup-button" style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+                            Create Backup
+                        </button>
+                        <a href="{% url 'admin:system-settings' %}" style="background-color: #f0f0f0; color: #333; padding: 10px 15px; text-decoration: none; border-radius: 4px;">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const backupButton = document.getElementById('backup-button');
+        const responseMessage = document.getElementById('response-message');
+        const form = backupButton.closest('form');
+        
+        backupButton.addEventListener('click', function() {
+            // Disable the button during the request
+            backupButton.disabled = true;
+            backupButton.innerText = 'Creating Backup...';
+            
+            // Get the form data
+            const formData = new FormData(form);
+            
+            // Send the request
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show the response message
+                responseMessage.style.display = 'block';
+                
+                if (data.success) {
+                    responseMessage.style.backgroundColor = '#d4edda';
+                    responseMessage.style.color = '#155724';
+                    responseMessage.innerText = data.message;
+                    
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = "{% url 'admin:system-settings' %}";
+                    }, 2000);
+                } else {
+                    responseMessage.style.backgroundColor = '#f8d7da';
+                    responseMessage.style.color = '#721c24';
+                    responseMessage.innerText = data.message;
+                    
+                    // Re-enable the button
+                    backupButton.disabled = false;
+                    backupButton.innerText = 'Try Again';
+                }
+            })
+            .catch(error => {
+                // Show an error message
+                responseMessage.style.display = 'block';
+                responseMessage.style.backgroundColor = '#f8d7da';
+                responseMessage.style.color = '#721c24';
+                responseMessage.innerText = 'An error occurred. Please try again.';
+                
+                // Re-enable the button
+                backupButton.disabled = false;
+                backupButton.innerText = 'Try Again';
+            });
+        });
+    });
+</script>
+{% endblock %} 

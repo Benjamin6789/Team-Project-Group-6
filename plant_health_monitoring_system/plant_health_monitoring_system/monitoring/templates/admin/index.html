@@ -1,0 +1,33 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block sidebar %}
+{{ block.super }}
+<div class="module" style="margin-top: 20px; background-color: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+    <h2 style="background-color: #FF9800; color: white; padding: 10px 15px; margin: 0; border-radius: 4px 4px 0 0;">
+        System Administration
+    </h2>
+    <div style="padding: 15px;">
+        <ul style="margin: 0; padding: 0; list-style: none;">
+            <li style="margin-bottom: 10px;">
+                <a href="{% url 'admin:system-settings' %}" style="display: flex; align-items: center; text-decoration: none; color: #4CAF50;">
+                    <i class="fas fa-cogs" style="margin-right: 10px; font-size: 18px;"></i>
+                    <span>System Settings</span>
+                </a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="{% url 'admin:csv-stats' %}" style="display: flex; align-items: center; text-decoration: none; color: #2196F3;">
+                    <i class="fas fa-file-csv" style="margin-right: 10px; font-size: 18px;"></i>
+                    <span>CSV File Statistics</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin:monitoring_systemstatus_changelist' %}" style="display: flex; align-items: center; text-decoration: none; color: #9C27B0;">
+                    <i class="fas fa-heartbeat" style="margin-right: 10px; font-size: 18px;"></i>
+                    <span>System Status</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %} 
